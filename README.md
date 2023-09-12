@@ -1,8 +1,8 @@
-##Payment SDK STC
+## Payment SDK STC
 
 Payment SDK allows you add STC wallet as payment gateway to ny iOS app.
 
-#Installation
+# Installation
 
 For installation you required to have a `merchant_id` and `secret_key` from STC Bahrain. 
 
