@@ -53,11 +53,11 @@ public final class STCSdk {
     }
 
     public func proceed() throws {
-        let request = "\(merchantId).\(secretKey)"
-        let token = SHA256.hash(data: Data(request.utf8))
-        let tokenString = token.compactMap { String(format: "%02x", $0) }.joined()
-        
-        let stcURL = "stcpaydevfrombenefitpay://checkout.stc?merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(tokenString)"
+        let request = "\(merchantId)-\(orderId)-\(amount.upto3Decimal())"
+        let key = SymmetricKey(data: Data(secretKey.utf8))
+        let signature = HMAC<SHA256>.authenticationCode(for: Data(request.utf8), using: key)
+        let signatureString = Data(signature).map { String(format: "%02hhx", $0) }.joined()
+        let stcURL = "stcpaydevfrombenefitpay://checkout.stc?merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(signatureString)"
         let url = URL(string: stcURL)!
         if UIApplication.shared.canOpenURL(url)
         {
