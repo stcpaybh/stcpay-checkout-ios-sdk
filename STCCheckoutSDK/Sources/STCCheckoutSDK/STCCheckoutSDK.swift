@@ -1,18 +1,34 @@
 import UIKit
 import CryptoKit
 
-public enum STCSdkError: Error {
+public enum STCCheckoutSDKError: Error {
     case stcAppNotInstalled
+    case invalidSecretKey
+    case invalidMerchantID
+    case invalidOrderId
+    case invalidAmount
 }
 
-public final class STCSdk {
+public final class STCCheckoutSDK {
 
     private var secretKey: String
     private var merchantId: String
     private var orderId: String
     private var amount: Double
 
-    private init(secretKey: String, merchantId: String, orderId: String, amount: Double) {
+    private init(secretKey: String, merchantId: String, orderId: String, amount: Double) throws {
+        guard !secretKey.isEmpty else {
+            throw STCCheckoutSDKError.invalidSecretKey
+        }
+        guard !merchantId.isEmpty else {
+            throw STCCheckoutSDKError.invalidMerchantID
+        }
+        guard !orderId.isEmpty else {
+            throw STCCheckoutSDKError.invalidOrderId
+        }
+        guard amount > 0.0 else {
+            throw STCCheckoutSDKError.invalidAmount
+        }
         self.secretKey = secretKey
         self.merchantId = merchantId
         self.orderId = orderId
@@ -47,8 +63,10 @@ public final class STCSdk {
             return self
         }
 
-        public func build() -> STCSdk {
-            return STCSdk(secretKey: secretKey, merchantId: merchantId, orderId: orderId, amount: amount)
+        public func build() throws -> STCCheckoutSDK {
+            do {
+                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, orderId: orderId, amount: amount)
+            }
         }
     }
 
@@ -63,7 +81,7 @@ public final class STCSdk {
         {
             UIApplication.shared.open(url)
         } else {
-            throw STCSdkError.stcAppNotInstalled
+            throw STCCheckoutSDKError.stcAppNotInstalled
         }
     }
 }

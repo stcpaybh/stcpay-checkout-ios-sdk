@@ -4,15 +4,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "STCSdk",
+    name: "STCCheckoutSDK",
     platforms: [
         .iOS(.v13)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "STCSdk",
-            targets: ["STCSdk"]),
+            name: "STCCheckoutSDK",
+            targets: ["STCCheckoutSDK"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -22,8 +22,8 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "STCSdk",
+            name: "STCCheckoutSDK",
             dependencies: [],
-            path: "STCSdk")
+            path: "STCCheckoutSDK")
     ]
 )
