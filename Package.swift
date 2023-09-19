@@ -24,6 +24,6 @@ let package = Package(
         .target(
             name: "STCCheckoutSDK",
             dependencies: [],
-            path: "STCCheckoutSDK")
+            path: "Sources")
     ]
 )

@@ -7,6 +7,8 @@ public enum STCCheckoutSDKError: Error {
     case invalidMerchantID
     case invalidOrderId
     case invalidAmount
+    case invalidMerchangeName
+    case invalidCallbackTag
 }
 
 private let debugURLScheme = "stcPayBhDebug"
@@ -18,13 +20,18 @@ public final class STCCheckoutSDK {
     private var merchantId: String
     private var orderId: String
     private var amount: Double
+    private var merchantName: String
+    private var callBackTag: String
 
-    private init(secretKey: String, merchantId: String, orderId: String, amount: Double) throws {
+    private init(secretKey: String, merchantId: String, merchangeName: String, orderId: String, amount: Double, callBackTag: String) throws {
         guard !secretKey.isEmpty else {
             throw STCCheckoutSDKError.invalidSecretKey
         }
         guard !merchantId.isEmpty else {
             throw STCCheckoutSDKError.invalidMerchantID
+        }
+        guard !merchangeName.isEmpty else {
+            throw STCCheckoutSDKError.invalidMerchangeName
         }
         guard !orderId.isEmpty else {
             throw STCCheckoutSDKError.invalidOrderId
@@ -32,10 +39,15 @@ public final class STCCheckoutSDK {
         guard amount > 0.0 else {
             throw STCCheckoutSDKError.invalidAmount
         }
+        guard !callBackTag.isEmpty else {
+            throw STCCheckoutSDKError.invalidCallbackTag
+        }
         self.secretKey = secretKey
         self.merchantId = merchantId
+        self.merchantName = merchangeName
         self.orderId = orderId
         self.amount = amount
+        self.callBackTag = callBackTag
     }
 
     public final class Builder {
@@ -43,6 +55,8 @@ public final class STCCheckoutSDK {
         private var merchantId: String = ""
         private var orderId: String = ""
         private var amount: Double = 0.0
+        private var merchantName: String = ""
+        private var callBackTag: String = ""
 
         public init() { }
 
@@ -65,10 +79,20 @@ public final class STCCheckoutSDK {
             self.amount = amount
             return self
         }
+        
+        public func setMerchantName(merchantName: String) -> Builder {
+            self.merchantName = merchantName
+            return self
+        }
+
+        public func setCallBackTag(tag: String) -> Builder {
+            self.callBackTag = tag
+            return self
+        }
 
         public func build() throws -> STCCheckoutSDK {
             do {
-                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, orderId: orderId, amount: amount)
+                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, merchangeName: merchantName, orderId: orderId, amount: amount, callBackTag: callBackTag)
             }
         }
     }
@@ -78,10 +102,11 @@ public final class STCCheckoutSDK {
         let key = SymmetricKey(data: Data(secretKey.utf8))
         let signature = HMAC<SHA256>.authenticationCode(for: Data(request.utf8), using: key)
         let signatureString = Data(signature).map { String(format: "%02hhx", $0) }.joined()
-        let stcDebugURL = "\(debugURLScheme)://checkout.stc?merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(signatureString)"
-        let stcURL = "\(debugURLScheme)://checkout.stc?merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(signatureString)"
-        if let url = URL(string: stcDebugURL), UIApplication.shared.canOpenURL(url)
-        {
+        let params = "merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(signatureString)&merchant_name=\(merchantName)&call_back_tag=\(callBackTag)"
+        let stcDebugURL = "\(debugURLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
+        let stcURL = "\(URLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
+        
+        if let url = URL(string: stcDebugURL), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         } else if let url = URL(string: stcURL), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)

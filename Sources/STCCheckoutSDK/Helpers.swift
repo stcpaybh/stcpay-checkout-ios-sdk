@@ -8,7 +8,7 @@
 import Foundation
 
 extension URL {
-    public var queryParameters: [String: String]? {
+    var queryParameters: [String: String]? {
         guard
             let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
             let queryItems = components.queryItems else { return nil }
@@ -18,41 +18,47 @@ extension URL {
     }
 }
 
+extension String {
+    func urlEncoded() -> String? {
+        addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+    }
+}
+
 extension Notification.Name {
 
-    static let STCPaymentResponse = Notification.Name("STCPaymentResponse")
+    public static let STCPaymentResponse = Notification.Name("STCPaymentResponse")
 
 }
 
 extension Double {
     // Calucate percentage based on given values
-    public func calculatePercentage(percentageVal: Double) -> Double {
+    func calculatePercentage(percentageVal: Double) -> Double {
         let val = self * percentageVal
         return val / 100.0
     }
     
-    public func upto2Decimal() -> String {
+    func upto2Decimal() -> String {
         if let formattedNum = self.getNumberFormater(2) {
             return formattedNum
         }
         return String(format: "%.2f", self)
     }
     
-    public func upto3Decimal() -> String {
+    func upto3Decimal() -> String {
         if let formattedNum = self.getNumberFormater(3) {
             return formattedNum
         }
         return String(format: "%.3f", self)
     }
     
-    public func upto1Decimal() -> String {
+    func upto1Decimal() -> String {
         if let formattedNum = self.getNumberFormater(1) {
             return formattedNum
         }
         return String(format: "%.1f", self)
     }
     
-    public func getNumberFormater(_ digits: Int) -> String? {
+    func getNumberFormater(_ digits: Int) -> String? {
         let numberFormat = NumberFormatter()
         numberFormat.numberStyle = .decimal
         numberFormat.usesSignificantDigits = false
