@@ -18,10 +18,10 @@ struct ContentView: View {
                 
                 do {
                     let pay = try STCCheckoutSDK.Builder()
-                        .setSecretKey(secretKey: "secretKey")
-                        .setMerchantId(merchantId: "merchantID")
-                        .setOrderId(orderId: "orderid")
-                        .setAmount(amount: 2.0)
+                        .setSecretKey(secretKey: "9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50")
+                        .setMerchantId(merchantId: "1")
+                        .setOrderId(orderId: "1")
+                        .setAmount(amount: 1.0)
                         .setMerchantName(merchantName: "Demo Merchant")
                         .setCallBackTag(tag: "STCSdkProject")
                         .build()

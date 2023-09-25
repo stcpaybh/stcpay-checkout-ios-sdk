@@ -100,8 +100,8 @@ public final class STCCheckoutSDK {
     public func proceed() throws {
         let request = "\(merchantId)-\(orderId)-\(amount.upto3Decimal())"
         let key = SymmetricKey(data: Data(secretKey.utf8))
-        let signature = HMAC<SHA256>.authenticationCode(for: Data(request.utf8), using: key)
-        let signatureString = Data(signature).map { String(format: "%02hhx", $0) }.joined()
+        let signature = HMAC<SHA512>.authenticationCode(for: Data(request.utf8), using: key)
+        let signatureString = Data(signature).base64EncodedString()
         let params = "merchant_id=\(merchantId)&order_id=\(orderId)&amount:\(amount)&token=\(signatureString)&merchant_name=\(merchantName)&call_back_tag=\(callBackTag)"
         let stcDebugURL = "\(debugURLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         let stcURL = "\(URLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
