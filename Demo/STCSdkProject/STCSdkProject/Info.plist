@@ -16,6 +16,8 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>stcpaydevfrombenefitpay</string>
+		<string>stcPayBh</string>
+		<string>stcPayBhDebug</string>
 	</array>
 </dict>
 </plist>
