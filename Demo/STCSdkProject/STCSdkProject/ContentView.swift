@@ -9,6 +9,10 @@ import SwiftUI
 import STCCheckoutSDK
 
 struct ContentView: View {
+    
+    @State private var didReceivedResponse = false
+    @State private var receivedResponse = ""
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -23,11 +27,11 @@ struct ContentView: View {
                         .setOrderId(orderId: "13")
                         .setAmount(amount: 1.0)
                         .setCallBackTag(tag: "STCSdkProject")
-                        .setExternalID(external_ref_id: "123211839")
+                        .setExternalID(external_ref_id: "510811839")
                         .build()
                     try pay.proceed()
                 } catch STCCheckoutSDKError.stcAppNotInstalled {
-                    
+                    print("App Not Installed")
                 } catch STCCheckoutSDKError.invalidSecretKey {
                     print("Invalid secret key")
                 } catch STCCheckoutSDKError.invalidMerchantID {
@@ -50,6 +54,16 @@ struct ContentView: View {
         .padding()
         .onOpenURL { url in
             STCCheckoutSDK.consumeResponseFromSTCGateway(url: url)
+        }
+        .alert(receivedResponse, isPresented: $didReceivedResponse) {
+            Button("OK", role: .cancel) { }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name.STCPaymentResponse)) { obj in
+            // Change key as per your "userInfo"
+            if let responseObj = obj.object as? [String:Any], let message = responseObj["message"] as? String {
+                receivedResponse = message
+                 didReceivedResponse = true
+            }
         }
     }
 }
