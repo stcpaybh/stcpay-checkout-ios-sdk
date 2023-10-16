@@ -14,6 +14,7 @@ public enum STCCheckoutSDKError: Error {
 
 private let debugURLScheme = "stcPayBhDebug"
 private let URLScheme = "stcPayBh"
+private let appUrl = "itms-apps://apple.com/app/id1336421084"
 
 public final class STCCheckoutSDK {
 
@@ -114,11 +115,9 @@ public final class STCCheckoutSDK {
         } else if let url = URL(string: stcURL), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         } else {
-            guard let url = URL(string: "itms-apps://apple.com/app/id1336421084") else {
-                return //be safe
+            if let url = URL(string:appUrl ) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            
             throw STCCheckoutSDKError.stcAppNotInstalled
         }
     }
