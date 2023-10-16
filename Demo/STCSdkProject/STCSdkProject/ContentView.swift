@@ -27,7 +27,7 @@ struct ContentView: View {
                         .setOrderId(orderId: "13")
                         .setAmount(amount: 1.0)
                         .setCallBackTag(tag: "STCSdkProject")
-                        .setExternalID(external_ref_id: "510811839")
+                        .setExternalID(external_ref_id: "512211839")
                         .build()
                     try pay.proceed()
                 } catch STCCheckoutSDKError.stcAppNotInstalled {

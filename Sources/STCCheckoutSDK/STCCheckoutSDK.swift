@@ -114,6 +114,11 @@ public final class STCCheckoutSDK {
         } else if let url = URL(string: stcURL), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         } else {
+            guard let url = URL(string: "itms-apps://apple.com/app/id1336421084") else {
+                return //be safe
+            }
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            
             throw STCCheckoutSDKError.stcAppNotInstalled
         }
     }
