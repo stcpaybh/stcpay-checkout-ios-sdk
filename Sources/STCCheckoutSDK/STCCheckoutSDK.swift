@@ -5,10 +5,8 @@ public enum STCCheckoutSDKError: Error {
     case stcAppNotInstalled
     case invalidSecretKey
     case invalidMerchantID
-    case invalidOrderId
     case invalidAmount
     ///case invalidMerchangeName
-    case invalidCallbackTag
     case invalidExternalID
 }
 
@@ -20,47 +18,35 @@ public final class STCCheckoutSDK {
 
     private var secretKey: String
     private var merchantId: String
-    private var orderId: String
     private var amount: Double
-    private var callBackTag: String
-    private var external_ref_id: String
+    private var externalRefId: String
 
-    private init(secretKey: String, merchantId: String, orderId: String, amount: Double, callBackTag: String, external_ref_id: String) throws {
+    private init(secretKey: String, merchantId: String, amount: Double, externalRefId: String) throws {
         guard !secretKey.isEmpty else {
             throw STCCheckoutSDKError.invalidSecretKey
         }
         guard !merchantId.isEmpty else {
             throw STCCheckoutSDKError.invalidMerchantID
         }
-        guard !orderId.isEmpty else {
-            throw STCCheckoutSDKError.invalidOrderId
-        }
         guard amount > 0.0 else {
             throw STCCheckoutSDKError.invalidAmount
         }
-        guard !callBackTag.isEmpty else {
-            throw STCCheckoutSDKError.invalidCallbackTag
-        }
-        guard !external_ref_id.isEmpty else {
+        guard !externalRefId.isEmpty else {
             throw STCCheckoutSDKError.invalidExternalID
         }
         
         self.secretKey = secretKey
         self.merchantId = merchantId
-        self.orderId = orderId
         self.amount = amount
-        self.callBackTag = callBackTag
-        self.external_ref_id = external_ref_id
+        self.externalRefId = externalRefId
     }
 
     public final class Builder {
         private var secretKey: String = ""
         private var merchantId: String = ""
-        private var orderId: String = ""
         private var amount: Double = 0.0
         private var merchantName: String = ""
-        private var callBackTag: String = ""
-        private var external_ref_id: String = ""
+        private var externalRefId: String = ""
  
         public init() { }
 
@@ -74,39 +60,29 @@ public final class STCCheckoutSDK {
             return self
         }
 
-        public func setOrderId(orderId: String) -> Builder {
-            self.orderId = orderId
-            return self
-        }
-
         public func setAmount(amount: Double) -> Builder {
             self.amount = amount
             return self
         }
-        
-        public func setCallBackTag(tag: String) -> Builder {
-            self.callBackTag = tag
-            return self
-        }
 
-        public func setExternalID(external_ref_id: String) -> Builder {
-            self.external_ref_id = external_ref_id
+        public func setExternalID(externalRefId: String) -> Builder {
+            self.externalRefId = externalRefId
             return self
         }
 
         public func build() throws -> STCCheckoutSDK {
             do {
-                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, orderId: orderId, amount: amount, callBackTag: callBackTag, external_ref_id: external_ref_id)
+                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, amount: amount, externalRefId: externalRefId)
             }
         }
     }
 
     public func proceed() throws {
-        let request = "\(merchantId)-\(external_ref_id)-\(amount.upto3Decimal())"
+        let request = "\(merchantId)-\(externalRefId)-\(amount.upto3Decimal())"
         let key = SymmetricKey(data: Data(secretKey.utf8))
         let signature = HMAC<SHA512>.authenticationCode(for: Data(request.utf8), using: key)
         let signatureString = Data(signature).base64EncodedString()
-        let params = "merchant_id=\(merchantId)&order_id=\(orderId)&amount=\(amount)&token=\(signatureString)&call_back_tag=\(callBackTag)&external_ref_id=\(external_ref_id)"
+        let params = "merchant_id=\(merchantId)&amount=\(amount)&token=\(signatureString)&external_ref_id=\(externalRefId)"
         let stcDebugURL = "\(debugURLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         let stcURL = "\(URLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         
@@ -115,16 +91,16 @@ public final class STCCheckoutSDK {
         } else if let url = URL(string: stcURL), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         } else {
-            if let url = URL(string:appUrl ) {
+            if let url = URL(string:appUrl) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
-            throw STCCheckoutSDKError.stcAppNotInstalled
         }
     }
     
     public static func consumeResponseFromSTCGateway(url: URL) -> Bool {
         if url.absoluteString.contains("://checkout.stc") {
             let params = url.queryParameters
+            print("Responsefromconsumerapp \(params)")
             NotificationCenter.default.post(name: .STCPaymentResponse, object: params)
             return true
         } else {
