@@ -24,10 +24,10 @@ struct ContentView: View {
                     let pay = try STCCheckoutSDK.Builder()
                         .setSecretKey(secretKey: "9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50")
                         .setMerchantId(merchantId: "1")
-                        .setOrderId(orderId: "13")
+                        .setOrderId(orderId: String(Int.random(in: 100..<6000)))
                         .setAmount(amount: 1.0)
                         .setCallBackTag(tag: "STCSdkProject")
-                        .setExternalID(external_ref_id: "512211839")
+                        .setExternalID(external_ref_id: String(Int.random(in: 100..<6000)))
                         .build()
                     try pay.proceed()
                 } catch STCCheckoutSDKError.stcAppNotInstalled {
@@ -47,7 +47,7 @@ struct ContentView: View {
                     
                 }
             } label: {
-                Text("Hello, world!")
+                Text("Open stc pay app!")
             }
 
         }

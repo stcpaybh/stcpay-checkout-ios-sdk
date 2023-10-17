@@ -125,6 +125,7 @@ public final class STCCheckoutSDK {
     public static func consumeResponseFromSTCGateway(url: URL) -> Bool {
         if url.absoluteString.contains("://checkout.stc") {
             let params = url.queryParameters
+            print("Responsefromconsumerapp \(params)")
             NotificationCenter.default.post(name: .STCPaymentResponse, object: params)
             return true
         } else {
