@@ -1,124 +1,68 @@
-# stc pay checkout iOS Sdk
+## Payment SDK STC
 
-## Installation
+Payment SDK allows you add STC wallet as payment gateway to ny iOS app.
 
-You may add stc pay checkout SDK to your swift project via SPM (Swift Project Manager) using below URL
+# Installation
+
+For installation you required to have a `merchant_id` and `secret_key` from STC Bahrain. 
+
+You may add STC SDK to you swift project via SPM (Swift Project Manager) using below URL
 
 > https://github.com/stcpaybh/stcpay-checkout-ios-sdk.git
+> 
 
-## Sample Apps
+# How to use
 
-A project with basic example is provided [here](https://github.com/stcpaybh/stcpay-checkout-ios-sdk/tree/main/Demo/STCSdkProject).
-
-## Code Initialization
-
-To initialize the stc pay checkout SDK in your app, use below snippet in your app's Application class or where ever you seems appropiate:
-
-#### Initialize SDK
-
-This will open stc pay app, after login you will be redirected to checkout page once payment is done, either *success* or *failure* you will be redirected to source app for checkout callback.
-
+Making payment with STC SDK is pretty simple requires just a single call to payment SDK which will load STC app from your phone to checkout page.
 
 ```
-do {
-        let pay = try STCCheckoutSDK.Builder()
-        .setSecretKey(secretKey: "") /* Secret key obtained from stc pay */
-        .setMerchantId(merchantId: "") /* Merchat Id obtained from stc pay */
-        .setAmount(amount: ) /* Amount for that payment */
-        .setExternalID(externalRefId: "") /* Your own orderId for that payment */
-        .build()
-        try pay.proceed()
-    } catch STCCheckoutSDKError.stcAppNotInstalled {
-        print("App Not Installed")
-    } catch STCCheckoutSDKError.invalidSecretKey {
-        print("Invalid secret key")
-    } catch STCCheckoutSDKError.invalidMerchantID {
-        print("Invalid merchant id")
-    } catch STCCheckoutSDKError.invalidAmount {
-        print("Invalid Amount")
-    } catch STCCheckoutSDKError.invalidExternalID{
-        print("Invalid External ID")
-    }
-    catch {
-        
-    }
-        
-}
+import STCCheckoutSDK
+
+				do {
+                    let pay = try STCCheckoutSDK.Builder()
+                        .setSecretKey(secretKey: "secretKey")
+                        .setMerchantId(merchantId: "merchantID")
+                        .setOrderId(orderId: "orderid")
+                        .setAmount(amount: 2.0)
+                        .setMerchantName(merchantName: "Demo Merchant")
+                        .setCallBackTag(tag: "STCSdkProject")
+                        .build()
+                    try pay.proceed()
+                } catch STCCheckoutSDKError.stcAppNotInstalled {
+                    
+                } catch STCCheckoutSDKError.invalidSecretKey {
+                    print("Invalid secret key")
+                } catch STCCheckoutSDKError.invalidMerchantID {
+                    print("Invalid merchant id")
+                } catch STCCheckoutSDKError.invalidOrderId {
+                    
+                } catch STCCheckoutSDKError.invalidAmount {
+                    
+                } catch {
+                    
+                }
+
 ```
 
-###### Attributes
+This will open STC app after login you will be redirected to checkout page once payment is done either case *success* or *failure* you will be redirected to source app for checkout feedback.
 
-Following are functions you need to call for SDK initialization:
+On source application just listen to *Notification name*
 
-| Function |  Description | Type | Required | Default value |
-|:---|:---|:---|:---|:---|
-| setSecretKey() |Set the secret key | String | Yes | Should be non-null |
-| setMerchantId() | Set the merchant ID | String| Yes | Should be non-null |
-| setExternalID() | Set the orderID of your payment | String | Yes| Should be non-null |
-| setAmount() | Amount for that orderID | Double| Yes | Should be greater than 0 |
-
-### Callback
-
-#### For Swift UI
-
-Listen to onOpenURL like below
 ```
 .onOpenURL { url in
-    STCCheckoutSDK.consumeResponseFromSTCGateway(url: url)
-}
-```
-On source application just listen to *Notification name* like below 
+            STCCheckoutSDK.consumeResponseFromSTCGateway(url: url)
+        }
 
 ```
-NotificationCenter.default.publisher(for: NSNotification.Name.STCPaymentResponse)) { notification in
-    if let response = notification.object as? [String: Any] {
-    ///response from checkout
-    }
-}
-.store(in: &cancellable)
+
+like below 
+
+```
+NotificationCenter.default.publisher(for: . STCPaymentResponse).sink {[weak self] notification in
+            if let response = notification.object as? [String: Any] {
+                ///response from checkout
+            }
+        }
+        .store(in: &cancellable)
         
 ```
-
-#### For UI Kit
-
-// Register to receive notification
-```
-NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(YourClassName.methodOfReceivedNotification(_:)), name: NSNotification.Name.STCPaymentResponse, object: nil)
-```
-where ```#selector(YourClassName.methodOfReceivedNotification(_:))``` will be your function in which you will receive ```notification``` as parameter and then you can do:
-
-```
-if let response = notification.object as? [String: Any] {
-    ///response from checkout
-}
-```
-
-
-### Success
-
-If response has code == 0 then you can get ```transaction_id``` from stc pay which you can use to link it with your own order.
-
-### Failure
-
-In onFailure, code can have following values:
-
-| Result Code values | 
-|:---|
-|Exception = 1|
-|SessionExpired = 2|
-|SessionMissing = 24|
-|InvalidGuid = 20|
-|CustomerProfileNotFound = 26|
-|InvalidParam = 35|
-|InsufficientBalance = 72|
-|IncorrectServiceId = 79|
-|TransactionRollback = 84|
-|InvalidType = 23|
-|OtpLimitExceed = 7|
-|IncorrectOtp = 8|
-|TryCountExceed = 98|
-| Any other code, consider it as unknown exception|
-
-You can use them based on your own criteria for error handling.
-
-```message : String``` which will be a String and you can use it based on your own criteria for error handling.
