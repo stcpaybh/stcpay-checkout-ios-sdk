@@ -2,9 +2,10 @@
 
 ## Installation
 
-You may add stc pay checkout SDK to your swift project via SPM (Swift Project Manager) using below URL
+You may add stc pay checkout SDK to your swift project via SPM (Swift Project Manager) using below URL:
 
 > https://github.com/stcpaybh/stcpay-checkout-ios-sdk.git
+> Version 1.0.1
 
 ## Sample Apps
 
