@@ -79,9 +79,7 @@ public final class STCCheckoutSDK {
 
     public func proceed() throws {
         let request = "\(merchantId)-\(externalRefId)-\(amount.upto3Decimal())"
-        let key = SymmetricKey(data: Data(secretKey.utf8))
-        let signature = HMAC<SHA512>.authenticationCode(for: Data(request.utf8), using: key)
-        let signatureString = Data(signature).base64EncodedString()
+        let signatureString = Helpers.getHashedData(secretKey: secretKey, data: request)
         let params = "merchant_id=\(merchantId)&amount=\(amount)&token=\(signatureString)&external_ref_id=\(externalRefId)"
         let stcDebugURL = "\(debugURLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         let stcURL = "\(URLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"

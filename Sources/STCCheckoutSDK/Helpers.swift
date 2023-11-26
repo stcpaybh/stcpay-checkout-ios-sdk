@@ -6,6 +6,15 @@
 //
 
 import Foundation
+import CryptoKit
+
+class Helpers {
+    public static func getHashedData(secretKey : String, data : String) -> String {
+        let key = SymmetricKey(data: Data(secretKey.utf8))
+        let signature = HMAC<SHA512>.authenticationCode(for: Data(data.utf8), using: key)
+        return Data(signature).base64EncodedString()
+    }
+}
 
 extension URL {
     var queryParameters: [String: String]? {
