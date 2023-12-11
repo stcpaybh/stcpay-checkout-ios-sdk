@@ -14,7 +14,7 @@ private let debugURLScheme = "stcPayBhDebug"
 private let URLScheme = "stcPayBh"
 private let appUrl = "itms-apps://apple.com/app/id1336421084"
 
-public final class STCCheckoutSDK {
+@objc public final class STCCheckoutSDK: NSObject {
 
     private var secretKey: String
     private var merchantId: String
@@ -41,43 +41,43 @@ public final class STCCheckoutSDK {
         self.externalRefId = externalRefId
     }
 
-    public final class Builder {
+    @objc public final class Builder: NSObject {
         private var secretKey: String = ""
         private var merchantId: String = ""
         private var amount: Double = 0.0
         private var merchantName: String = ""
         private var externalRefId: String = ""
  
-        public init() { }
+        @objc public override init() { }
 
-        public func setSecretKey(secretKey: String) -> Builder {
+        @objc public func setSecretKey(secretKey: String) -> Builder {
             self.secretKey = secretKey
             return self
         }
 
-        public func setMerchantId(merchantId: String) -> Builder {
+        @objc public func setMerchantId(merchantId: String) -> Builder {
             self.merchantId = merchantId
             return self
         }
 
-        public func setAmount(amount: Double) -> Builder {
+        @objc public func setAmount(amount: Double) -> Builder {
             self.amount = amount
             return self
         }
 
-        public func setExternalID(externalRefId: String) -> Builder {
+        @objc public func setExternalID(externalRefId: String) -> Builder {
             self.externalRefId = externalRefId
             return self
         }
 
-        public func build() throws -> STCCheckoutSDK {
+        @objc public func build() throws -> STCCheckoutSDK {
             do {
                 return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, amount: amount, externalRefId: externalRefId)
             }
         }
     }
 
-    public func proceed() throws {
+    @objc public func proceed() throws {
         let request = "\(merchantId)-\(externalRefId)-\(amount.upto3Decimal())"
         let signatureString = Helpers.getHashedData(secretKey: secretKey, data: request)
         let params = "merchant_id=\(merchantId)&amount=\(amount)&token=\(signatureString)&external_ref_id=\(externalRefId)"
@@ -95,7 +95,7 @@ public final class STCCheckoutSDK {
         }
     }
     
-    public static func consumeResponseFromSTCGateway(url: URL) -> Bool {
+    @objc public static func consumeResponseFromSTCGateway(url: URL) -> Bool {
         if url.absoluteString.contains("://checkout.stc") {
             let params = url.queryParameters
             print("Responsefromconsumerapp \(params)")
