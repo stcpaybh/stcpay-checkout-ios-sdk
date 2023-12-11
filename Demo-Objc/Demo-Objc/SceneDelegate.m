@@ -6,12 +6,20 @@
 //
 
 #import "SceneDelegate.h"
+@import STCCheckoutSDK;
 
 @interface SceneDelegate ()
 
 @end
 
 @implementation SceneDelegate
+
+- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
+    NSURL *url = [[[URLContexts allObjects] firstObject] URL];
+    if (url != nil) {
+        [STCCheckoutSDK consumeResponseFromSTCGatewayWithUrl:url];
+    }
+}
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
