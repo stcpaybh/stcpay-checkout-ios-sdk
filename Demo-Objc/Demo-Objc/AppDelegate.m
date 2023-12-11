@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+@import STCCheckoutSDK;
 
 @interface AppDelegate ()
 
@@ -19,6 +20,9 @@
     return YES;
 }
 
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    return [STCCheckoutSDK consumeResponseFromSTCGatewayWithUrl:url];
+}
 
 #pragma mark - UISceneSession lifecycle
 

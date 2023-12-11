@@ -16,6 +16,7 @@
 		6D26C43D2B270D97001ECE29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D26C43C2B270D97001ECE29 /* main.m */; };
 		6D26C4452B270E2A001ECE29 /* STCCheckoutSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26C4442B270E2A001ECE29 /* STCCheckoutSDK */; };
 		6D26C44E2B271164001ECE29 /* STCCheckoutSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26C44D2B271164001ECE29 /* STCCheckoutSDK */; };
+		6D26C45A2B271556001ECE29 /* STCCheckoutSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26C4592B271556001ECE29 /* STCCheckoutSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D26C44E2B271164001ECE29 /* STCCheckoutSDK in Frameworks */,
+				6D26C45A2B271556001ECE29 /* STCCheckoutSDK in Frameworks */,
 				6D26C4452B270E2A001ECE29 /* STCCheckoutSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,6 +103,7 @@
 			packageProductDependencies = (
 				6D26C4442B270E2A001ECE29 /* STCCheckoutSDK */,
 				6D26C44D2B271164001ECE29 /* STCCheckoutSDK */,
+				6D26C4592B271556001ECE29 /* STCCheckoutSDK */,
 			);
 			productName = "Demo-Objc";
 			productReference = 6D26C4272B270D96001ECE29 /* Demo-Objc.app */;
@@ -131,6 +134,7 @@
 			);
 			mainGroup = 6D26C41E2B270D96001ECE29;
 			packageReferences = (
+				6D26C4582B271556001ECE29 /* XCRemoteSwiftPackageReference "stcpay-checkout-ios-sdk" */,
 			);
 			productRefGroup = 6D26C4282B270D96001ECE29 /* Products */;
 			projectDirPath = "";
@@ -320,6 +324,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -351,6 +356,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -388,6 +394,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		6D26C4582B271556001ECE29 /* XCRemoteSwiftPackageReference "stcpay-checkout-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stcpaybh/stcpay-checkout-ios-sdk.git";
+			requirement = {
+				branch = "feature/objc-support";
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		6D26C4442B270E2A001ECE29 /* STCCheckoutSDK */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -395,6 +412,11 @@
 		};
 		6D26C44D2B271164001ECE29 /* STCCheckoutSDK */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = STCCheckoutSDK;
+		};
+		6D26C4592B271556001ECE29 /* STCCheckoutSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6D26C4582B271556001ECE29 /* XCRemoteSwiftPackageReference "stcpay-checkout-ios-sdk" */;
 			productName = STCCheckoutSDK;
 		};
 /* End XCSwiftPackageProductDependency section */
