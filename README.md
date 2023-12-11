@@ -105,6 +105,64 @@ if let response = notification.object as? [String: Any] {
 }
 ```
 
+##Objective-C Implementation
+
+For objective-c implementation installation stays same. 
+
+Import Framework in objc code 
+
+`@import STCCheckoutSDK;`
+
+Build the payment object and proceed
+
+```
+NSError *builderError = nil;
+    STCCheckoutSDK *pay = [[[[[[Builder new]
+                           setSecretKeyWithSecretKey:@"9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50"]
+                           setMerchantIdWithMerchantId:@"1"]
+                           setAmountWithAmount:500]
+                           setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
+                           buildAndReturnError: &builderError];
+    if (builderError != nil) {
+        [self handleError:builderError];
+        return;
+    }
+    NSError *proceedError = nil;
+    [pay proceedAndReturnError: &proceedError];
+    if (proceedError != nil) {
+        [self handleError:proceedError];
+    }
+```
+Handle errors from SDK
+
+```
+
+- (void)handleError:(NSError *)error {
+    switch (error.code) {
+        case 0: //App not installed
+            printf("STC application is not installed");
+            break;
+        case 1: //Invalid secret key
+            printf("Invalid secret key");
+            break;
+        case 2: //Invalid merchant ID
+            printf("Invalid merchant ID");
+            break;
+        case 3: //Invalid amount
+            printf("Invalid amount");
+            break;
+        case 4: //Invalid externalID
+            printf("Invalid externalID");
+            break;
+            
+        default:
+            break;
+    }
+}
+```  
+
+Also demo Objc project is added in repository you may consult.
+
 
 ### Success
 
