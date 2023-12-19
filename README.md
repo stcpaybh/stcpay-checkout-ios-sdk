@@ -153,11 +153,10 @@ https://api.stcpay.com.bh/api/mobile/StcpayCheckout/InquireTransactionStatus
 ```
 {
   "merchant-id": "<your merchant ID>",
-  "stcpay-transaction-id": <transaction ID received from successful transaction from stc pay checkout SDK>,
+  "external-transaction-id": <exteranl transaction ID of a merchant>,
   "hash": "<URL encoded hashed string created by you>"
 }
 ```
-
 ##### Header
 client-secret : <**API secret** provided to you>
 
@@ -177,9 +176,10 @@ Following are functions you need to call for SDK initialization:
 | data | String which you want to encrypt | String| Yes | Should be non-null |
 
 ### How to create data
-You will create a data string as follow, merchant ID and stc pay transaction ID separated by dash(-):
-"<merchant-id>-<stcpay-transaction-id>"
+You will create a data string as follow, merchant ID and external transaction ID separated by dash(-):
+"<merchant-id>-<external-transaction-id>"
 e.g. Your merchant ID is **1234** & Transaction ID is **5678**, then the data string will be: **"1234-5678"**
+
 
 ##### Response
 
