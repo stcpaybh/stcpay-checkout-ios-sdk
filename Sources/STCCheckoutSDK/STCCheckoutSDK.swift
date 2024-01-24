@@ -37,8 +37,8 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
             throw STCCheckoutSDKError.invalidExternalID
         }
         
-        guard !externalRefId.isEmpty else {
-            throw STCCheckoutSDKError.invalidExternalID
+        guard !callBackTag.isEmpty else {
+            throw STCCheckoutSDKError.invalidCallBackTag
         }
         
         self.secretKey = secretKey

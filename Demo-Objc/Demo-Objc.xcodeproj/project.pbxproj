@@ -399,7 +399,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stcpaybh/stcpay-checkout-ios-sdk.git";
 			requirement = {
-				branch = "feature/objc-support";
+				branch = main;
 				kind = branch;
 			};
 		};

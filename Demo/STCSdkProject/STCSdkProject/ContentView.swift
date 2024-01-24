@@ -26,6 +26,7 @@ struct ContentView: View {
                         .setMerchantId(merchantId: "1")
                         .setAmount(amount: 500)
                         .setExternalID(externalRefId: String(Int.random(in: 100..<6000)))
+                        .setCallBack(tag: "STCSdkProject")
                         .build()
                     try pay.proceed()
                 } catch STCCheckoutSDKError.stcAppNotInstalled {
