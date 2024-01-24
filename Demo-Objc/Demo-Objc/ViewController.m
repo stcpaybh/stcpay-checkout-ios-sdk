@@ -58,6 +58,9 @@
         case 4: //Invalid externalID
             printf("Invalid externalID");
             break;
+        case 5: //Invalid callback tag
+            printf("Invalid callback tag");
+            break;
             
         default:
             break;

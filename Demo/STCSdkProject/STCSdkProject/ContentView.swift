@@ -39,6 +39,8 @@ struct ContentView: View {
                     print("Invalid Amount")
                 } catch STCCheckoutSDKError.invalidExternalID{
                     print("Invalid External ID")
+                } catch STCCheckoutSDKError.invalidCallBackTag{
+                    print("Invalid callback tag")
                 }
                 catch {
                     

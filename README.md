@@ -9,35 +9,45 @@ You may add stc pay checkout SDK to your swift project via SPM (Swift Project Ma
 
 ## Sample Apps
 
-A project with basic example is provided [here](https://github.com/stcpaybh/stcpay-checkout-ios-sdk/tree/feature/objc-support/Demo-Objc).
+A project with basic example is provided [here](https://github.com/stcpaybh/stcpay-checkout-ios-sdk/tree/main/Demo/STCSdkProject).
 
-## Objective-C Implementation
+## Code Initialization
 
-For objective-c implementation installation stays same. 
+To initialize the stc pay checkout SDK in your app, use below snippet in your app's Application class or where ever you seems appropiate:
 
-Import Framework in objc code 
+#### Initialize SDK
 
-`@import STCCheckoutSDK;`
+This will open stc pay app, after login you will be redirected to checkout page once payment is done, either *success* or *failure* you will be redirected to source app for checkout callback.
 
-Build the payment object and proceed
 
 ```
-NSError *builderError = nil;
-    STCCheckoutSDK *pay = [[[[[[Builder new]
-                           setSecretKeyWithSecretKey:@"9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50"]
-                           setMerchantIdWithMerchantId:@"1"]
-                           setAmountWithAmount:500]
-                           setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
-                           buildAndReturnError: &builderError];
-    if (builderError != nil) {
-        [self handleError:builderError];
-        return;
+do {
+        let pay = try STCCheckoutSDK.Builder()
+        .setSecretKey(secretKey: "") /* Secret key obtained from stc pay */
+        .setMerchantId(merchantId: "") /* Merchat Id obtained from stc pay */
+        .setAmount(amount: ) /* Amount for that payment */
+        .setExternalID(externalRefId: "") /* Your own orderId for that payment */
+        .setCallBack(tag: "STCSdkProject") /* Your application URL scheme*/
+        .build()
+        try pay.proceed()
+    } catch STCCheckoutSDKError.stcAppNotInstalled {
+        print("App Not Installed")
+    } catch STCCheckoutSDKError.invalidSecretKey {
+        print("Invalid secret key")
+    } catch STCCheckoutSDKError.invalidMerchantID {
+        print("Invalid merchant id")
+    } catch STCCheckoutSDKError.invalidAmount {
+        print("Invalid Amount")
+    } catch STCCheckoutSDKError.invalidExternalID{
+        print("Invalid External ID")
+    } catch STCCheckoutSDKError.invalidCallBackTag{
+        print("Invalid callback tag")
     }
-    NSError *proceedError = nil;
-    [pay proceedAndReturnError: &proceedError];
-    if (proceedError != nil) {
-        [self handleError:proceedError];
+    catch {
+        
     }
+        
+}
 ```
 
 ###### Attributes
@@ -50,9 +60,85 @@ Following are functions you need to call for SDK initialization:
 | setMerchantId() | Set the merchant ID | String| Yes | Should be non-null |
 | setExternalID() | Set the orderID of your payment | String | Yes| Should be non-null |
 | setAmount() | Amount for that orderID | Double| Yes | Should be greater than 0 |
+| setCallBack() | App's URL scheme | String| Yes | Should be non-null |
 
+### Callback
 
-###### Handle errors from SDK
+#### For Swift UI
+
+Listen to onOpenURL like below
+```
+.onOpenURL { url in
+    STCCheckoutSDK.consumeResponseFromSTCGateway(url: url)
+}
+```
+On source application just listen to *Notification name* like below 
+
+```
+NotificationCenter.default.publisher(for: NSNotification.Name.STCPaymentResponse)) { notification in
+    if let response = notification.object as? [String: Any] {
+    ///response from checkout
+    }
+}
+.store(in: &cancellable)
+        
+```
+
+#### For UI Kit
+
+You will get the callback in AppDelegate, which you can update it:
+```
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+    if url.absoluteString.contains("://checkout.stc") {
+        STCCheckoutSDK.consumeResponseFromSTCGateway(url: url)
+    }
+}
+```
+
+And then you to register to listen to the notification in your UIController
+
+// Register to receive notification
+```
+NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(YourClassName.methodOfReceivedNotification(_:)), name: NSNotification.Name.STCPaymentResponse, object: nil)
+```
+where ```#selector(YourClassName.methodOfReceivedNotification(_:))``` will be your function in which you will receive ```notification``` as parameter and then you can do:
+
+```
+if let response = notification.object as? [String: Any] {
+    ///response from checkout
+}
+```
+
+##Objective-C Implementation
+
+For objective-c implementation installation stays same. 
+
+Import Framework in objc code 
+
+`@import STCCheckoutSDK;`
+
+Build the payment object and proceed
+
+```
+NSError *builderError = nil;
+    STCCheckoutSDK *pay = [[[[[[[Builder new]
+                           setSecretKeyWithSecretKey:@"9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50"]
+                           setMerchantIdWithMerchantId:@"1"]
+                           setAmountWithAmount:500]
+                           setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
+                           setCallBackWithTag: @"STCSdkProject"] // URL scheme of your project
+                           buildAndReturnError: &builderError];
+    if (builderError != nil) {
+        [self handleError:builderError];
+        return;
+    }
+    NSError *proceedError = nil;
+    [pay proceedAndReturnError: &proceedError];
+    if (proceedError != nil) {
+        [self handleError:proceedError];
+    }
+```
+Handle errors from SDK
 
 ```
 
@@ -73,7 +159,9 @@ Following are functions you need to call for SDK initialization:
         case 4: //Invalid externalID
             printf("Invalid externalID");
             break;
-            
+        case 5: //Invalid callback tag
+            printf("Invalid callback tag");
+            break;
         default:
             break;
     }
@@ -81,6 +169,7 @@ Following are functions you need to call for SDK initialization:
 ```  
 
 Also demo Objc project is added in repository you may consult.
+
 
 ### Success
 
@@ -137,7 +226,7 @@ You can use the helper function
 ```
 public static func getHashedData(secretKey : String, data : String) -> String
 ```
-declared in [Helpers.swift](https://github.com/stcpaybh/stcpay-checkout-ios-sdk/blob/feature/objc-support/Sources/STCCheckoutSDK/Helpers.swift).
+declared in [Helpers.swift](https://github.com/stcpaybh/stcpay-checkout-ios-sdk/blob/main/Sources/STCCheckoutSDK/Helpers.swift).
 
 Following are functions you need to call for SDK initialization:
 
