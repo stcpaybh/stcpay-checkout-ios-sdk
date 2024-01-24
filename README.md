@@ -27,7 +27,7 @@ do {
         .setMerchantId(merchantId: "") /* Merchat Id obtained from stc pay */
         .setAmount(amount: ) /* Amount for that payment */
         .setExternalID(externalRefId: "") /* Your own orderId for that payment */
-        .setCallBack(tag: "STCSdkProject") /* Your application URL scheme*/
+        .setCallBack(tag: "") /* Your application URL scheme*/
         .build()
         try pay.proceed()
     } catch STCCheckoutSDKError.stcAppNotInstalled {
@@ -126,7 +126,7 @@ NSError *builderError = nil;
                            setMerchantIdWithMerchantId:@"1"]
                            setAmountWithAmount:500]
                            setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
-                           setCallBackWithTag: @"STCSdkProject"] // URL scheme of your project
+                           setCallBackWithTag: @""] // URL scheme of your project
                            buildAndReturnError: &builderError];
     if (builderError != nil) {
         [self handleError:builderError];
