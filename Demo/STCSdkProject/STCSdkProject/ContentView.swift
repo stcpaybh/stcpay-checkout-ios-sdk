@@ -26,6 +26,7 @@ struct ContentView: View {
                         .setMerchantId(merchantId: "1")
                         .setAmount(amount: 500)
                         .setExternalID(externalRefId: String(Int.random(in: 100..<6000)))
+                        .setDate(date: 1714653727)
                         .setCallBack(tag: "STCSdkProject")
                         .build()
                     try pay.proceed()
@@ -39,6 +40,8 @@ struct ContentView: View {
                     print("Invalid Amount")
                 } catch STCCheckoutSDKError.invalidExternalID{
                     print("Invalid External ID")
+                } catch STCCheckoutSDKError.invalidDate{
+                    print("Invalid Date")
                 } catch STCCheckoutSDKError.invalidCallBackTag{
                     print("Invalid callback tag")
                 }
