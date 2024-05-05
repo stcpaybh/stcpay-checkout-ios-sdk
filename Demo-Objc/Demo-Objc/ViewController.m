@@ -27,8 +27,8 @@
                            setMerchantIdWithMerchantId:@"1"]
                            setAmountWithAmount:500]
                            setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
-                           setDateWithDate:1714653727]
                            setCallBackWithTag: @"STCSdkProject"] // URL scheme of your project
+                           setDateWithDate:1714653727]
                            buildAndReturnError: &builderError];
     if (builderError != nil) {
         [self handleError:builderError];
@@ -60,12 +60,11 @@
             printf("Invalid externalID");
             break;
         case 5: //Invalid callback tag
-            printf("Invalid date");
-            break;
-        case 6: //Invalid callback tag
             printf("Invalid callback tag");
             break;
-            
+        case 6: //Invalid date
+            printf("Invalid date");
+            break;
         default:
             break;
     }

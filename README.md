@@ -28,6 +28,7 @@ do {
         .setAmount(amount: ) /* Amount for that payment */
         .setExternalID(externalRefId: "") /* Your own orderId for that payment */
         .setCallBack(tag: "") /* Your application URL scheme*/
+        .setDate(date: "") /* Pass current date in milliseconds */
         .build()
         try pay.proceed()
     } catch STCCheckoutSDKError.stcAppNotInstalled {
@@ -42,7 +43,10 @@ do {
         print("Invalid External ID")
     } catch STCCheckoutSDKError.invalidCallBackTag{
         print("Invalid callback tag")
-    }
+    } catch STCCheckoutSDKError.invalidDate{
+        print("Invalid Date")
+    } 
+    
     catch {
         
     }
@@ -60,7 +64,8 @@ Following are functions you need to call for SDK initialization:
 | setMerchantId() | Set the merchant ID | String| Yes | Should be non-null |
 | setExternalID() | Set the orderID of your payment | String | Yes| Should be non-null |
 | setAmount() | Amount for that orderID | Double| Yes | Should be greater than 0 |
-| setCallBack() | App's URL scheme | String| Yes | Should be non-null |
+| setCallBack() | App's URL scheme | String | Yes | Should be non-null |
+| setDate() | Current Date in milliseconds | Double | Yes | Should be non-null & greater than 0 |
 
 ### Callback
 
@@ -127,6 +132,7 @@ NSError *builderError = nil;
                            setAmountWithAmount:500]
                            setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
                            setCallBackWithTag: @""] // URL scheme of your project
+                           setDateWithDate: @""] // Current Date in milliseconds
                            buildAndReturnError: &builderError];
     if (builderError != nil) {
         [self handleError:builderError];
@@ -161,6 +167,9 @@ Handle errors from SDK
             break;
         case 5: //Invalid callback tag
             printf("Invalid callback tag");
+            break;
+        case 6: //Invalid date
+            printf("Invalid date");
             break;
         default:
             break;
