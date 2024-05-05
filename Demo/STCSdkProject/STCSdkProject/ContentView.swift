@@ -27,6 +27,7 @@ struct ContentView: View {
                         .setAmount(amount: 500)
                         .setExternalID(externalRefId: String(Int.random(in: 100..<6000)))
                         .setCallBack(tag: "STCSdkProject")
+                        .setDate(date: Date().timeIntervalSince1970 * 1000)
                         .build()
                     try pay.proceed()
                 } catch STCCheckoutSDKError.stcAppNotInstalled {
@@ -41,6 +42,8 @@ struct ContentView: View {
                     print("Invalid External ID")
                 } catch STCCheckoutSDKError.invalidCallBackTag{
                     print("Invalid callback tag")
+                } catch STCCheckoutSDKError.invalidDate{
+                    print("Invalid Date")
                 }
                 catch {
                     

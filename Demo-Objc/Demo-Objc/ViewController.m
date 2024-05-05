@@ -22,12 +22,13 @@
 
 - (IBAction)proceedAction:(id)sender {
     NSError *builderError = nil;
-    STCCheckoutSDK *pay = [[[[[[[Builder new]
+    STCCheckoutSDK *pay = [[[[[[[[Builder new]
                            setSecretKeyWithSecretKey:@"9ec20e2b5bc569f37ad3df432b70dbb0eca39db68cd3be63d103f8ce9d1217bcef95d688334de74553f9df0c4e0171cc65f65e94c4beb8a3420cfed31ef2ab50"]
                            setMerchantIdWithMerchantId:@"1"]
                            setAmountWithAmount:500]
                            setExternalIDWithExternalRefId:[NSString stringWithFormat:@"%d", arc4random_uniform(5900) + 100]]
                            setCallBackWithTag: @"STCSdkProject"] // URL scheme of your project
+                           setDateWithDate:1714653727]
                            buildAndReturnError: &builderError];
     if (builderError != nil) {
         [self handleError:builderError];
@@ -61,7 +62,9 @@
         case 5: //Invalid callback tag
             printf("Invalid callback tag");
             break;
-            
+        case 6: //Invalid date
+            printf("Invalid date");
+            break;
         default:
             break;
     }

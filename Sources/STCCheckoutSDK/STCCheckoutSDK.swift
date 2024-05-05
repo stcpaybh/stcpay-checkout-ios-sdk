@@ -9,6 +9,7 @@ public enum STCCheckoutSDKError: Error {
     ///case invalidMerchangeName
     case invalidExternalID
     case invalidCallBackTag
+    case invalidDate
 }
 
 private let debugURLScheme = "stcPayBhDebug"
@@ -22,8 +23,9 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
     private var amount: Double
     private var externalRefId: String
     private var callBackTag: String
+    private var date: Double
 
-    private init(secretKey: String, merchantId: String, amount: Double, externalRefId: String, callBackTag: String) throws {
+    private init(secretKey: String, merchantId: String, amount: Double, externalRefId: String, callBackTag: String, date: Double) throws {
         guard !secretKey.isEmpty else {
             throw STCCheckoutSDKError.invalidSecretKey
         }
@@ -36,9 +38,11 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
         guard !externalRefId.isEmpty else {
             throw STCCheckoutSDKError.invalidExternalID
         }
-        
         guard !callBackTag.isEmpty else {
             throw STCCheckoutSDKError.invalidCallBackTag
+        }
+        guard date > 0 else {
+            throw STCCheckoutSDKError.invalidDate
         }
         
         self.secretKey = secretKey
@@ -46,6 +50,7 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
         self.amount = amount
         self.externalRefId = externalRefId
         self.callBackTag = callBackTag
+        self.date = date
     }
 
     @objc public final class Builder: NSObject {
@@ -55,6 +60,7 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
         private var merchantName: String = ""
         private var externalRefId: String = ""
         private var callBackTag: String = ""
+        private var date: Double = 0.0
         @objc public override init() { }
 
         @objc public func setSecretKey(secretKey: String) -> Builder {
@@ -81,10 +87,15 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
             self.callBackTag = tag
             return self
         }
+        
+        @objc public func setDate(date: Double) -> Builder {
+            self.date = date
+            return self
+        }
 
         @objc public func build() throws -> STCCheckoutSDK {
             do {
-                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, amount: amount, externalRefId: externalRefId, callBackTag: callBackTag)
+                return try STCCheckoutSDK(secretKey: secretKey, merchantId: merchantId, amount: amount, externalRefId: externalRefId, callBackTag: callBackTag, date: date)
             }
         }
     }
@@ -92,7 +103,7 @@ private let appUrl = "itms-apps://apple.com/app/id1336421084"
     @objc public func proceed() throws {
         let request = "\(merchantId)-\(externalRefId)-\(amount.upto3Decimal())"
         let signatureString = Helpers.getHashedData(secretKey: secretKey, data: request)
-        let params = "merchant_id=\(merchantId)&amount=\(amount)&token=\(signatureString)&external_ref_id=\(externalRefId)&callback_tag=\(callBackTag)"
+        let params = "merchant_id=\(merchantId)&amount=\(amount)&token=\(signatureString)&external_ref_id=\(externalRefId)&callback_tag=\(callBackTag)&date=\(date)"
         let stcDebugURL = "\(debugURLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         let stcURL = "\(URLScheme)://checkout.stc?\(params.urlEncoded() ?? "")"
         
