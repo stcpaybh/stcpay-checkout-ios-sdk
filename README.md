@@ -272,3 +272,109 @@ e.g. Your merchant ID is **1234** & Transaction ID is **5678**, then the data st
 |3 - Transaction not found|
 |4 - Hash not matched|
 |5 - There is some technical error|
+
+## Inquire API
+
+Transactions processed from stc pay Checkout SDK can be verified through an API
+To inquire the status of a particular transaction you can use below API endpoint:
+
+##### Endpoint (POST)
+#### WILL SHARE WHEN REQUIRED
+
+##### Request
+
+```
+{
+  "merchant-id": "<your merchant ID>",
+  "external-transaction-id": <exteranl transaction ID of a merchant>,
+  "hash": "<URL encoded hashed string created by you>"
+}
+```
+##### Header
+client-secret : <**API secret** provided to you>
+
+#### How to create hash
+You will create hash by encrypting a string using the secret key provided already.
+You can use the helper function
+```
+fun getHashedData(secretKey: String, data: String): String
+```
+declared in [StcPayCheckoutHelper.kt](https://github.com/stcpaybh/stcpay-checkout-android-sdk/blob/main/stcPayCheckout/src/main/java/com/stcpay/checkout/utils/StcPayCheckoutHelper.kt).
+
+Following are functions you need to call for SDK initialization:
+
+| Params    | Description                          | Type   | Required | Default value      |
+|:----------|:-------------------------------------|:-------|:---------|:-------------------|
+| secretKey | Pass the secret key provided already | String | Yes      | Should be non-null |
+| data      | String which you want to encrypt     | String | Yes      | Should be non-null |
+
+### How to create data
+You will create a data string as follow, merchant ID and external transaction ID separated by dash(-):
+"<merchant-id>-<external-transaction-id>"
+e.g. Your merchant ID is **1234** & Transaction ID is **5678**, then the data string will be: **"1234-5678"**
+
+##### Response
+
+```
+{
+    "response-code": 0,
+    "response-message": "Paid",
+    "data": {
+        "transaction-id": <stc pay transaction id (Long)>
+    }
+}
+```
+
+#### Response Code possible values
+
+| Values                            | 
+|:----------------------------------|
+| 0 - Paid                          |
+| 1 - Unpaid                        |
+| 2 - Merchant not found            |
+| 3 - Transaction not found         |
+| 4 - Hash not matched              |
+| 5 - There is some technical error |
+
+## Refund API
+
+Merchants can use the following API to refund the transaction, if applicable.
+
+
+##### Endpoint (POST)
+#### WILL SHARE WHEN REQUIRED
+
+##### Request
+
+```
+{
+  "merchant-id": "<your merchant ID>",
+  "external-transaction-id": <exteranl transaction ID of a merchant>
+}
+```
+##### Header
+
+client-secret : <**API secret** provided to you>
+client-id : <**Client ID** provided to you>
+
+
+##### Response
+
+```
+{
+    "response-code": 0,
+    "response-message": "Amount is refunded to customer successfully."
+}
+```
+
+#### Response Code possible values
+
+| Values                                                                                                 | 
+|:-------------------------------------------------------------------------------------------------------|
+| 0 - Amount is refunded to customer successfully.                                                       |
+| 1 - Unable to refund the amount due to some technical error. Please try again later                    |
+| 5 - Unable to refund                                                                                   |
+| 4 - Amount is not paid on stcpay                                                                       |
+| 3 - Transaction not found                                                                              |
+| 2 - Merchant not found                                                                                 |
+
